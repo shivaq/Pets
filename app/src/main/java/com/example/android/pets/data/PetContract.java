@@ -8,19 +8,6 @@ import android.provider.BaseColumns;
 
 public final class PetContract {
 
-    private static final String TEXT_TYPE = " TEXT";
-    private static final String INTEGER_TYPE = " INTEGER";
-    private static final String COMMA_SEP = ",";
-
-    public static final String SQL_CREATE_ENTRIES =
-            "CREATE TABLE " + PetEntry.TABLE_NAME + " (" +
-                    PetEntry._ID + " INTEGER PRIMARY KEY," +
-                    PetEntry.COLUMN_PET_NAME + TEXT_TYPE + COMMA_SEP +
-                    PetEntry.COLUMN_PET_BREED + TEXT_TYPE + COMMA_SEP +
-                    PetEntry.COLUMN_PET_GENDER + INTEGER_TYPE + COMMA_SEP +
-                    PetEntry.COLUMN_PET_WEIGHT + INTEGER_TYPE +
-            " )";
-
     public static final String SQL_DELETE_ENTRIES =
             "DROP TABLE IF EXISTS " + PetEntry.TABLE_NAME;
 

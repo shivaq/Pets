@@ -4,13 +4,15 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.android.pets.data.PetContract.PetEntry;
+
 
 /**
  * Created by Yasuaki on 2016/09/26.
  */
 
 /*Database helper for Pets app. Manages database creation and version management*/
-public class PetDbHelper extends SQLiteOpenHelper{
+public class PetDbHelper extends SQLiteOpenHelper {
 
     //If you change DB schema, you must increment the DB version
     public static final int DATABASE_VERSION = 1;
@@ -21,7 +23,7 @@ public class PetDbHelper extends SQLiteOpenHelper{
      *
      * @param context of the app
      */
-    public PetDbHelper (Context context){
+    public PetDbHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -30,9 +32,22 @@ public class PetDbHelper extends SQLiteOpenHelper{
      */
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
+        //Create String for SQL statement Data types
+        final String TEXT_TYPE = " TEXT";
+        final String INTEGER_TYPE = " INTEGER";
+        final String COMMA_SEP = ",";
 
+        //Create a String for SQL statement to create pets table
+        final String SQL_CREATE_ENTRIES =
+                "CREATE TABLE " + PetEntry.TABLE_NAME + " (" +
+                        PetEntry._ID + " INTEGER PRIMARY KEY," +
+                        PetEntry.COLUMN_PET_NAME + TEXT_TYPE + COMMA_SEP +
+                        PetEntry.COLUMN_PET_BREED + TEXT_TYPE + COMMA_SEP +
+                        PetEntry.COLUMN_PET_GENDER + INTEGER_TYPE + COMMA_SEP +
+                        PetEntry.COLUMN_PET_WEIGHT + INTEGER_TYPE +
+                        " )";
 
-        sqLiteDatabase.execSQL(PetContract.SQL_CREATE_ENTRIES);
+        sqLiteDatabase.execSQL(SQL_CREATE_ENTRIES);
     }
 
     @Override
