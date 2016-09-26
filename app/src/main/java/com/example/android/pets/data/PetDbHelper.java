@@ -9,6 +9,7 @@ import android.database.sqlite.SQLiteOpenHelper;
  * Created by Yasuaki on 2016/09/26.
  */
 
+/*Database helper for Pets app. Manages database creation and version management*/
 public class PetDbHelper extends SQLiteOpenHelper{
 
     public static final int DATABASE_VERSION = 1;
