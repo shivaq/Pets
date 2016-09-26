@@ -6,11 +6,6 @@ import android.database.sqlite.SQLiteOpenHelper;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 
-
-/**
- * Created by Yasuaki on 2016/09/26.
- */
-
 /*Database helper for Pets app. Manages database creation and version management*/
 public class PetDbHelper extends SQLiteOpenHelper {
 
