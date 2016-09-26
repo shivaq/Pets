@@ -4,6 +4,9 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
+import com.example.android.pets.data.PetContract;
+
+
 /**
  * Created by Yasuaki on 2016/09/26.
  */
@@ -19,7 +22,7 @@ public class PetDbHelper extends SQLiteOpenHelper{
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
+        sqLiteDatabase.execSQL(PetContract.SQL_CREATE_ENTRIES);
     }
 
     @Override
