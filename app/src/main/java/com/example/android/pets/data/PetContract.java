@@ -13,10 +13,10 @@ public final class PetContract {
         public static final String TABLE_NAME = "pets";
 
         public static final String COLUMN_ID ="_id";
-        public static final String COLUMN_PETS_NAME ="name";
-        public static final String COLUMN_BREED = "breed";
-        public static final String COLUMN_GENDER = "gender";
-        public static final String COLUMN_WEIGHT = "weight";
+        public static final String COLUMN_PET_NAME ="name";
+        public static final String COLUMN_PET_BREED = "breed";
+        public static final String COLUMN_PET_GENDER = "gender";
+        public static final String COLUMN_PET_WEIGHT = "weight";
 
         public static final int MALE = 1;
         public static final int FEMALE = 2;
