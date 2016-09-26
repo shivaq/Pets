@@ -8,7 +8,7 @@ import android.provider.BaseColumns;
 
 public final class PetContract {
 
-    public static final class Pets implements BaseColumns {
+    public static final class PetEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "pets";
 
