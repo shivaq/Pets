@@ -16,6 +16,10 @@ public final class PetContract {
         public static final String COLUMN_BREED = "breed";
         public static final String COLUMN_GENDER = "gender";
         public static final String COLUMN_WEIGHT = "weight";
+
+        public static final int MALE = 1;
+        public static final int FEMALE = 2;
+        public static final int UNKNOWN = 0;
     }
 
 }
