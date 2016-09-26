@@ -47,6 +47,9 @@ public class PetDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int oldVersion, int newVersion) {
-        sqLiteDatabase.execSQL(PetContract.SQL_DELETE_ENTRIES);
+
+        final String SQL_DELETE_ENTRIES =
+                "DROP TABLE IF EXISTS " + PetEntry.TABLE_NAME;
+        sqLiteDatabase.execSQL(SQL_DELETE_ENTRIES);
     }
 }

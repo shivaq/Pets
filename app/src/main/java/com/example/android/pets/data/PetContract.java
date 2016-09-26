@@ -8,8 +8,6 @@ import android.provider.BaseColumns;
 
 public final class PetContract {
 
-    public static final String SQL_DELETE_ENTRIES =
-            "DROP TABLE IF EXISTS " + PetEntry.TABLE_NAME;
 
     public static final class PetEntry implements BaseColumns {
 
