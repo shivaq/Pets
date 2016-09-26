@@ -15,8 +15,8 @@ import com.example.android.pets.data.PetContract.PetEntry;
 public class PetDbHelper extends SQLiteOpenHelper {
 
     //If you change DB schema, you must increment the DB version
-    public static final int DATABASE_VERSION = 1;
-    public static final String DATABASE_NAME = "pets.db";
+    private static final int DATABASE_VERSION = 1;
+    private static final String DATABASE_NAME = "pets.db";
 
     /**
      * Constructs a new instance of PetDbHelper
