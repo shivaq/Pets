@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -29,10 +30,15 @@ import android.widget.TextView;
 import com.example.android.pets.data.PetDbHelper;
 import com.example.android.pets.data.PetContract.PetEntry;
 
+import static android.R.attr.name;
+
 /**
  * Displays list of pets that were entered and stored in the app.
  */
 public class CatalogActivity extends AppCompatActivity {
+
+    //DB helper that will provide us access to the DB
+    private PetDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -48,7 +54,11 @@ public class CatalogActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
-        displayDatabaseInfo();
+
+        //To access our database, we instantiate our subclass of SQLiteOpenHelper
+        //and pass the context, which is the current activity
+        mDbHelper = new PetDbHelper(this);//onCreate内で、DBヘルパーはインスタンス化するんだね
+
     }
 
 
@@ -57,25 +67,22 @@ public class CatalogActivity extends AppCompatActivity {
      * the pets database.
      */
     private void displayDatabaseInfo() {
-        // To access our database, we instantiate our subclass of SQLiteOpenHelper
-        // and pass the context, which is the current activity.
-        PetDbHelper mDbHelper = new PetDbHelper(this);
 
         // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();
+        SQLiteDatabase db = mDbHelper.getReadableDatabase();//DB が生成/Open される .open shelter.db をプロンプトで行うのと同じことしてる
 
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);
+        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);//ペットテーブルのすべての行を含む cursor を取得
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
             TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());
+            displayView.setText("Number of rows in pets database table: " + cursor.getCount());//cursorの getcount
         } finally {
             // Always close the cursor when you're done reading from it. This releases all its
             // resources and makes it invalid.
-            cursor.close();
+            cursor.close();//読み込み完了したら、cursorを閉じること！ →リソース解放 + 無効にするという効用あり
         }
     }
 
@@ -86,6 +93,27 @@ public class CatalogActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
+    private void insertPet(){
+
+        //Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
+
+        //Define dummy values
+        String dummyName = "Toto";
+        String dummyBreed = "Terrier";
+        int dummyGender = PetEntry.GENDER_MALE;
+        int dummyWeight = 7;
+
+        //Create a new map of values, where column names are the keys
+        ContentValues values = new ContentValues();
+        values.put(PetEntry.COLUMN_PET_NAME, dummyName);
+        values.put(PetEntry.COLUMN_PET_BREED, dummyBreed);
+        values.put(PetEntry.COLUMN_PET_GENDER, dummyGender);
+        values.put(PetEntry.COLUMN_PET_WEIGHT, dummyWeight);
+
+        //Insert the new row, returning the primary key value of the new row
+        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);//このプライマリーキーは現状使わず
+    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -93,7 +121,8 @@ public class CatalogActivity extends AppCompatActivity {
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                // Do nothing for now
+                insertPet();
+                displayDatabaseInfo();
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:

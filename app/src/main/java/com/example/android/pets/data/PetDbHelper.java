@@ -45,7 +45,7 @@ public class PetDbHelper extends SQLiteOpenHelper {
                         PetEntry.COLUMN_PET_WEIGHT + INTEGER_TYPE +
                         " )";
 
-        //execSQL は static ではないので、
+        //execSQL は static ではないので、インスタンスメソッドなので、インスタンス経由で参照
         db.execSQL(SQL_CREATE_ENTRIES);
     }
 
