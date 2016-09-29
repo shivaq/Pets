@@ -61,6 +61,12 @@ public class CatalogActivity extends AppCompatActivity {
 
     }
 
+    //To display DB info when user back from other activity
+    @Override
+    protected void onStart() {
+        super.onStart();
+        displayDatabaseInfo();
+    }
 
     /**
      * Temporary helper method to display information in the onscreen TextView about the state of
