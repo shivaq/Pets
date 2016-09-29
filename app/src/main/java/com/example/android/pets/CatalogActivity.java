@@ -102,15 +102,16 @@ public class CatalogActivity extends AppCompatActivity {
                 null
         );
 
+        TextView displayView = (TextView) findViewById(R.id.text_view_pet);
+
         try {
-            // Display the number of rows in the Cursor (which reflects the number of rows in the
-            // pets table in the database).
-            TextView displayView = (TextView) findViewById(R.id.text_view_pet);
-            displayView.setText("Number of rows in pets database table: " + cursor.getCount());//cursorの getcount
+            displayView.setText("The pets table contains " + cursor.getCount() + "pets.\n\n");
+            displayView.append(PetEntry._ID + " - " + PetEntry.COLUMN_PET_NAME +
+                    PetEntry.COLUMN_PET_BREED + PetEntry.COLUMN_PET_GENDER +
+                    PetEntry.COLUMN_PET_WEIGHT + "\n");
         } finally {
-            // Always close the cursor when you're done reading from it. This releases all its
-            // resources and makes it invalid.
-            cursor.close();//読み込み完了したら、cursorを閉じること！ →リソース解放 + 無効にするという効用あり
+            //Always close cursor when you're done reading from it.
+            cursor.close();
         }
     }
 
@@ -121,7 +122,8 @@ public class CatalogActivity extends AppCompatActivity {
         getMenuInflater().inflate(R.menu.menu_catalog, menu);
         return true;
     }
-    private void insertPet(){
+
+    private void insertPet() {
 
         //Gets the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
