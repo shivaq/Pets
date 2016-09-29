@@ -79,7 +79,27 @@ public class CatalogActivity extends AppCompatActivity {
 
         // Perform this raw SQL query "SELECT * FROM pets"
         // to get a Cursor that contains all rows from the pets table.
-        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);//ペットテーブルのすべての行を含む cursor を取得
+//        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);//ペットテーブルのすべての行を含む cursor を取得
+
+        String[] projection = {
+                PetEntry._ID,
+                PetEntry.COLUMN_PET_NAME,
+                PetEntry.COLUMN_PET_WEIGHT
+        };
+
+        String selection = PetEntry.COLUMN_PET_GENDER + "=?";
+        String[] selectionArgs = {"1"};
+
+        Cursor cursor = db.query(
+                PetEntry.TABLE_NAME,
+                projection,
+                selection,
+                selectionArgs,
+                null,
+                null,
+                null
+        );
+
         try {
             // Display the number of rows in the Cursor (which reflects the number of rows in the
             // pets table in the database).
