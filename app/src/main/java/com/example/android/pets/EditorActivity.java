@@ -143,6 +143,7 @@ public class EditorActivity extends AppCompatActivity {
 
         int weight;
 
+        //Escape NumberFormatException. If we try to convert "" to int, there is an error.
         if(weightString.equals("")) {
             Log.v("EditorActivity", "This is empty String");
                   weight = 12345;

@@ -84,7 +84,9 @@ public class CatalogActivity extends AppCompatActivity {
         String[] projection = {
                 PetEntry._ID,
                 PetEntry.COLUMN_PET_NAME,
-                PetEntry.COLUMN_PET_WEIGHT
+                PetEntry.COLUMN_PET_WEIGHT,
+                PetEntry.COLUMN_PET_GENDER,
+                PetEntry.COLUMN_PET_BREED
         };
 
         String selection = PetEntry.COLUMN_PET_GENDER + "=?";
