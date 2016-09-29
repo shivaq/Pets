@@ -3,6 +3,7 @@ package com.example.android.pets.data;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.util.Log;
 
 //constant は inner class にいるので、PetEntry まで import する
 import com.example.android.pets.data.PetContract.PetEntry;
@@ -47,6 +48,8 @@ public class PetDbHelper extends SQLiteOpenHelper {
 
         //execSQL は static ではないので、インスタンスメソッドなので、インスタンス経由で参照
         db.execSQL(SQL_CREATE_ENTRIES);
+
+        Log.v("PetDbHelper", "done db.execSQL");
     }
 
     @Override

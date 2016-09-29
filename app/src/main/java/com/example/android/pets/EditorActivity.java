@@ -21,6 +21,7 @@ import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -33,6 +34,8 @@ import android.widget.Toast;
 import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
 import com.example.android.pets.data.PetDbHelper;
+
+import static android.R.attr.name;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -136,16 +139,31 @@ public class EditorActivity extends AppCompatActivity {
         //Convert editText input to each columns values
         String name = mNameEditText.getText().toString().trim();//trim() で前後の不要な空白を削除
         String breed = mNameEditText.getText().toString().trim();
-        int weight = Integer.parseInt(mWeightEditText.getText().toString().trim());
+        String weightString = mWeightEditText.getText().toString().trim();
+
+        int weight;
+
+        if(weightString.equals("")) {
+            Log.v("EditorActivity", "This is empty String");
+                  weight = 12345;
+        } else {
+            Log.v("EditorActivity", "weightString is " + weightString + " desu");
+            weight = Integer.parseInt(weightString);
+        }
 
         //Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
+
+        Log.v("EditorActivity", "done initialize ContentValues");
+
         values.put(PetEntry.COLUMN_PET_NAME, name);
         values.put(PetEntry.COLUMN_PET_BREED, breed);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
+        Log.v("EditorActivity", "done values.put");
 
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        Log.v("EditorActivity", "done db.insert");
 
         //Toast if insert data was successful
         if (newRowId == -1) {
