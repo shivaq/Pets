@@ -126,9 +126,9 @@ public class EditorActivity extends AppCompatActivity {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         //Convert editText input to each columns values
-        String name = mNameEditText.getText().toString();
-        String breed = mNameEditText.getText().toString();
-        int weight = Integer.parseInt(mWeightEditText.getText().toString());
+        String name = mNameEditText.getText().toString().trim();//trim() で前後の不要な空白を削除
+        String breed = mNameEditText.getText().toString().trim();
+        int weight = Integer.parseInt(mWeightEditText.getText().toString().trim());
 
         //Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
