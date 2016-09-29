@@ -159,6 +159,7 @@ public class EditorActivity extends AppCompatActivity {
             case R.id.action_save:
 
                 insertPet();
+                finish();//exit EditActivity to CatalogActivity
 
                 return true;
             // Respond to a click on the "Delete" menu option
