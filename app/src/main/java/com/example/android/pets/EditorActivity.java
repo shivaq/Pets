@@ -39,16 +39,24 @@ import com.example.android.pets.data.PetDbHelper;
  */
 public class EditorActivity extends AppCompatActivity {
 
-    /** EditText field to enter the pet's name */
+    /**
+     * EditText field to enter the pet's name
+     */
     private EditText mNameEditText;
 
-    /** EditText field to enter the pet's breed */
+    /**
+     * EditText field to enter the pet's breed
+     */
     private EditText mBreedEditText;
 
-    /** EditText field to enter the pet's weight */
+    /**
+     * EditText field to enter the pet's weight
+     */
     private EditText mWeightEditText;
 
-    /** EditText field to enter the pet's gender */
+    /**
+     * EditText field to enter the pet's gender
+     */
     private Spinner mGenderSpinner;
 
     /**
@@ -56,9 +64,6 @@ public class EditorActivity extends AppCompatActivity {
      * 0 for unknown gender, 1 for male, 2 for female.
      */
     private int mGender = 0;
-
-    //DbHelper that will provide us access to the DB
-    private PetDbHelper mDbHelper;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,8 +78,6 @@ public class EditorActivity extends AppCompatActivity {
 
         setupSpinner();
 
-        //instantiate sublcass of SQLiteOpenHelper and pass context of current activity
-        mDbHelper = new PetDbHelper(this);
     }
 
     /**
@@ -120,7 +123,12 @@ public class EditorActivity extends AppCompatActivity {
     /**
      * Get user input from edittext and save new pet into database
      */
-    private void insertPet(){
+    private void insertPet() {
+
+        //Move this from member to here, because this is used only here
+        //DbHelper that will provide us access to the DB
+        //instantiate subclass of SQLiteOpenHelper and pass context of current activity
+        PetDbHelper mDbHelper = new PetDbHelper(this);
 
         //get the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
@@ -139,8 +147,12 @@ public class EditorActivity extends AppCompatActivity {
 
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
 
-        Toast.makeText(this, name + " is registerd!" + breed + " " +
-                mGender + " " + weight + "kg", Toast.LENGTH_SHORT).show();
+        //Toast if insert data was successful
+        if (newRowId == -1) {
+            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, "Pet saved with id: " + newRowId, Toast.LENGTH_SHORT).show();
+        }
     }
 
     @Override
