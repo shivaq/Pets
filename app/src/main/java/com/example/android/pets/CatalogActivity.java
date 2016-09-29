@@ -105,10 +105,34 @@ public class CatalogActivity extends AppCompatActivity {
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
 
         try {
+            //Create header in the text view that looks like this:
+            //_id - name - breed - gender - weight
             displayView.setText("The pets table contains " + cursor.getCount() + "pets.\n\n");
             displayView.append(PetEntry._ID + " - " + PetEntry.COLUMN_PET_NAME +
-                    PetEntry.COLUMN_PET_BREED + PetEntry.COLUMN_PET_GENDER +
-                    PetEntry.COLUMN_PET_WEIGHT + "\n");
+                    " - " + PetEntry.COLUMN_PET_BREED +  " - " + PetEntry.COLUMN_PET_GENDER +
+                    " - " + PetEntry.COLUMN_PET_WEIGHT + "\n");
+
+            //1.Get the index of each column
+            int idColumnIndex = cursor.getColumnIndex(PetEntry._ID);
+            int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME);
+            int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
+            int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
+            int weightColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
+
+            //2.Iterate throw all the returned rows in the Cursor to display its contents
+            while(cursor.moveToNext()){
+                //2-1.Retrieve each value with column index
+                int currentID = cursor.getInt(idColumnIndex);
+                String currentName = cursor.getString(nameColumnIndex);
+                String currentBreed = cursor.getString(breedColumnIndex);
+                int currentGender = cursor.getInt(genderColumnIndex);
+                int currentWeight = cursor.getInt(weightColumnIndex);
+
+                //2-2. display this rows values
+                displayView.append("\n" + currentID + " - " + currentName + " - " +
+                currentBreed + " - " + currentGender + " - " + currentWeight);
+            }
+
         } finally {
             //Always close cursor when you're done reading from it.
             cursor.close();
