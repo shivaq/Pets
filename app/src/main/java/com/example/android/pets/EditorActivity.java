@@ -166,6 +166,7 @@ public class EditorActivity extends AppCompatActivity {
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
         Log.v("EditorActivity", "done db.insert");
 
+        //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
         //Toast if insert data was successful
         if (newRowId == -1) {
             Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();

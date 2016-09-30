@@ -92,6 +92,7 @@ public class CatalogActivity extends AppCompatActivity {
         String selection = PetEntry.COLUMN_PET_GENDER + "=?";
         String[] selectionArgs = {"1"};
 
+        //クエリを実行。Cursor OBJ として取得
         Cursor cursor = db.query(
                 PetEntry.TABLE_NAME,
                 projection,
