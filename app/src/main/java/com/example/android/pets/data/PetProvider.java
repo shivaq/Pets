@@ -2,13 +2,19 @@ package com.example.android.pets.data;
 
 import android.content.ContentProvider;
 import android.content.ContentValues;
+import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
+
+import com.example.android.pets.CatalogActivity;
 
 /**
  * {@link ContentProvider} for Pets app.
  */
 public class PetProvider extends ContentProvider {
+
+    //declare here and make this global
+    private PetDbHelper mDbHelper;
 
     /** Tag for the log messages */
     public static final String LOG_TAG = PetProvider.class.getSimpleName();
@@ -18,9 +24,8 @@ public class PetProvider extends ContentProvider {
      */
     @Override
     public boolean onCreate() {
-        // TODO: Create and initialize a PetDbHelper object to gain access to the pets database.
-        // Make sure the variable is a global variable, so it can be referenced from other
-        // ContentProvider methods.
+
+        mDbHelper = new PetDbHelper(getContext());//Activity のコンテキストをゲットして渡す
         return true;
     }
 
