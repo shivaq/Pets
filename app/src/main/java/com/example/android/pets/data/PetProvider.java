@@ -46,8 +46,8 @@ public class PetProvider extends ContentProvider {
 
         //Add all content URI patterns to UriMatcher.
         // Provider should recognize them.
-        sUriMatcher.addURI("com.example.android.pets", "pets", PETS);
-        sUriMatcher.addURI("com.example.android.pets", "pets/#", PET_ID);
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS, PETS);
+        sUriMatcher.addURI(PetContract.CONTENT_AUTHORITY, PetContract.PATH_PETS + "/#", PET_ID);
     }
 
     /**
