@@ -74,13 +74,6 @@ public class CatalogActivity extends AppCompatActivity {
      */
     private void displayDatabaseInfo() {
 
-        // Create and/or open a database to read from it
-        SQLiteDatabase db = mDbHelper.getReadableDatabase();//DB が生成/Open される .open shelter.db をプロンプトで行うのと同じことしてる
-
-        // Perform this raw SQL query "SELECT * FROM pets"
-        // to get a Cursor that contains all rows from the pets table.
-//        Cursor cursor = db.rawQuery("SELECT * FROM " + PetEntry.TABLE_NAME, null);//ペットテーブルのすべての行を含む cursor を取得
-
         String[] projection = {
                 PetEntry._ID,
                 PetEntry.COLUMN_PET_NAME,
@@ -90,18 +83,19 @@ public class CatalogActivity extends AppCompatActivity {
         };
 
         String selection = PetEntry.COLUMN_PET_GENDER + "=?";
-        String[] selectionArgs = {"1"};
 
-        //クエリを実行。Cursor OBJ として取得
-        Cursor cursor = db.query(
-                PetEntry.TABLE_NAME,
+        String[] selectionArgs = {"2"};
+
+        //Note!!! This is a bad behavior to contact with database directly.
+        //Instead, do contact with Content Provider!!!
+
+        //Perform a query on the provider using the ContentResolver.
+        Cursor cursor = getContentResolver().query(
+                PetEntry.CONTENT_URI,
                 projection,
                 selection,
                 selectionArgs,
-                null,
-                null,
-                null
-        );
+                null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
 
@@ -110,7 +104,7 @@ public class CatalogActivity extends AppCompatActivity {
             //_id - name - breed - gender - weight
             displayView.setText("The pets table contains " + cursor.getCount() + "pets.\n\n");
             displayView.append(PetEntry._ID + " - " + PetEntry.COLUMN_PET_NAME +
-                    " - " + PetEntry.COLUMN_PET_BREED +  " - " + PetEntry.COLUMN_PET_GENDER +
+                    " - " + PetEntry.COLUMN_PET_BREED + " - " + PetEntry.COLUMN_PET_GENDER +
                     " - " + PetEntry.COLUMN_PET_WEIGHT + "\n");
 
             //1.Get the index of each column
@@ -121,7 +115,7 @@ public class CatalogActivity extends AppCompatActivity {
             int weightColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
 
             //2.Iterate throw all the returned rows in the Cursor to display its contents
-            while(cursor.moveToNext()){
+            while (cursor.moveToNext()) {
                 //2-1.Retrieve each value with column index
                 int currentID = cursor.getInt(idColumnIndex);
                 String currentName = cursor.getString(nameColumnIndex);
@@ -131,7 +125,7 @@ public class CatalogActivity extends AppCompatActivity {
 
                 //2-2. display this rows values
                 displayView.append("\n" + currentID + " - " + currentName + " - " +
-                currentBreed + " - " + currentGender + " - " + currentWeight);
+                        currentBreed + " - " + currentGender + " - " + currentWeight);
             }
 
         } finally {
