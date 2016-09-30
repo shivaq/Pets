@@ -124,18 +124,14 @@ public class PetProvider extends ContentProvider {
 
 
 
-
-
-
-
-
-
     /**
      * Insert new data into the provider with the given ContentValues.
      */
     @Override
     public Uri insert(Uri uri, ContentValues contentValues) {
+
         final int match = sUriMatcher.match(uri);
+
         switch (match) {
             case PETS:
                 return insertPet(uri, contentValues);
@@ -143,22 +139,21 @@ public class PetProvider extends ContentProvider {
                 throw new IllegalArgumentException("Insertion is not supported for " + uri);
         }
     }
-
     //We separate insert() to two shorter method. insert and insertPet.
     //We choose not they remains longer method.
-
     /**
-     * Insert a pet into the database with the given content values. Return the new content URI
-     * for that specific row in the database.
+     * Insert a pet into the database with the given content values.
+     * Return the new content URI for that specific row in the database.
      */
     private Uri insertPet(Uri uri, ContentValues values) {
 
-        // TODO: Insert a new pet into the pets database table with the given ContentValues
+        uri = getContext().getContentResolver().insert(uri, values);
 
         // Once we know the ID of the new row in the table,
         // return the new URI with the ID appended to the end of it
         return ContentUris.withAppendedId(uri, id);
     }
+
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
