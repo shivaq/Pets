@@ -67,13 +67,23 @@ public class PetProvider extends ContentProvider {
         return true;
     }
 
+
+
+
+
+
+
+
+
     /**
-     * Perform the query for the given URI. Use the given projection, selection, selection arguments, and sort order.
+     * Perform the query for the given URI.
+     * Use the given projection, selection, selection arguments, and sort order.
      */
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
                         String sortOrder) {
-        // Get readable database
+
+        // Get access to database with read mode
         SQLiteDatabase database = mDbHelper.getReadableDatabase();
 
         // This cursor will hold the result of the query
@@ -81,27 +91,26 @@ public class PetProvider extends ContentProvider {
 
         // Figure out if the URI matcher can match the URI to a specific code
         int match = sUriMatcher.match(uri);
+
         switch (match) {
             case PETS:
-                // For the PETS code, query the pets table directly with the given
-                // projection, selection, selection arguments, and sort order. The cursor
-                // could contain multiple rows of the pets table.
-                // TODO: Perform database query on pets table
+                //Use arguments for selection, selectionArgs and sortOrder.
+                // No need to specify where clause here. Do request for entire table.
+                cursor = database.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs,
+                        null, null, sortOrder);
                 break;
             case PET_ID:
-                // For the PET_ID code, extract out the ID from the URI.
-                // For an example URI such as "content://com.example.android.pets/pets/3",
-                // the selection will be "_id=?" and the selection argument will be a
-                // String array containing the actual ID of 3 in this case.
-                //
-                // For every "?" in the selection, we need to have an element in the selection
-                // arguments that will fill in the "?". Since we have 1 question mark in the
-                // selection, we have 1 String in the selection arguments' String array.
+
+                //the PET_ID code uri pattern requests for specific row.
+                // So construct a where clause.
                 selection = PetEntry._ID + "=?";
+                //valueOf: see the popup for this method.
+                //ContentUris.parseId(uri): converts last path segment to long.
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
 
                 // This will perform a query on the pets table where the _id equals 3 to return a
                 // Cursor containing that row of the table.
+                //This cursor is for return value
                 cursor = database.query(PetEntry.TABLE_NAME, projection, selection, selectionArgs,
                         null, null, sortOrder);
                 break;
@@ -110,6 +119,14 @@ public class PetProvider extends ContentProvider {
         }
         return cursor;
     }
+
+
+
+
+
+
+
+
 
     /**
      * Insert new data into the provider with the given ContentValues.
