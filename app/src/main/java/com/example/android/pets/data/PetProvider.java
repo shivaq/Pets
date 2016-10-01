@@ -12,6 +12,7 @@ import android.util.Log;
 import com.example.android.pets.data.PetContract.PetEntry;
 
 import static android.R.attr.id;
+import static android.R.attr.name;
 
 /**
  * {@link ContentProvider} for Pets app.
@@ -138,19 +139,37 @@ public class PetProvider extends ContentProvider {
      */
     private Uri insertPet(Uri uri, ContentValues values) {
 
+        //Get name from ContentValues and do sanity check
+        String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+        if (name == null) {//null は駄目。空欄はよし。となる。
+            throw new IllegalArgumentException("Pet requires a name");
+        }
+
+        // No need to check the breed, any value is valid (including null).
+
+        //isValidGender is defined in Contract
+        Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+        if(gender == null || !PetEntry.isValidGender(gender)){
+            throw new IllegalArgumentException("Pet requires valid gender");
+        }
+
+        Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+        if (weight != null && weight < 0) {
+            throw new IllegalArgumentException("Pet requires valid weight");
+        }
+
+
         //1.Gets the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
 
         //2.Do provider version insert.
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+        long id = db.insert(PetEntry.TABLE_NAME, null, values);
 
         // If the ID is -1, then the insertion failed. Log an error and return null.
         if (id == -1) {
             Log.e(LOG_TAG, "Failed to insert row for " + uri);
             return null;
         }
-
-        Log.v(LOG_TAG, "New row ID " + newRowId);
 
         //3.Return the new URI with the ID appended to the end of it.
         //           New row ID is automatically retrieved.
