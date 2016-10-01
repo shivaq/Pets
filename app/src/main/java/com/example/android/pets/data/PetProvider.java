@@ -69,14 +69,6 @@ public class PetProvider extends ContentProvider {
         return true;
     }
 
-
-
-
-
-
-
-
-
     /**
      * Perform the query for the given URI.
      * Use the given projection, selection, selection arguments, and sort order.
@@ -122,6 +114,7 @@ public class PetProvider extends ContentProvider {
         return cursor;
     }
 
+
     /**
      * Insert new data into the provider with the given ContentValues.
      */
@@ -148,8 +141,14 @@ public class PetProvider extends ContentProvider {
         //1.Gets the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
 
-        //2.insert
+        //2.Do provider version insert.
         long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+
+        // If the ID is -1, then the insertion failed. Log an error and return null.
+        if (id == -1) {
+            Log.e(LOG_TAG, "Failed to insert row for " + uri);
+            return null;
+        }
 
         Log.v(LOG_TAG, "New row ID " + newRowId);
 
@@ -157,6 +156,7 @@ public class PetProvider extends ContentProvider {
         //           New row ID is automatically retrieved.
         return ContentUris.withAppendedId(uri, id);
     }
+
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
