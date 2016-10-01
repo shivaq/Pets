@@ -58,4 +58,9 @@
 
     <!-- Label for dropdown menu option if the pet is female [CHAR LIMIT=20] -->
     <string name="gender_female">Female</string>
+
+    <!--Toast the result of pet data insert-->
+    <string name="pet_register_success">Pet register succeeded!!  ID →</string>
+    <string name="error_registering">Error with saving pet</string>
+    <string name="insert_dummy">insert dummy data. New row ID is....</string>
 </resources>

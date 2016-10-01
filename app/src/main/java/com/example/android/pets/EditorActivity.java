@@ -169,9 +169,10 @@ public class EditorActivity extends AppCompatActivity {
         //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
         //Toast if insert data was successful
         if (newRowId == -1) {
-            Toast.makeText(this, "Error with saving pet", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.error_registering), Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Pet saved with id: " + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.pet_register_success)
+                    + newRowId, Toast.LENGTH_SHORT).show();
         }
     }
 

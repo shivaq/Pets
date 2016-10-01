@@ -15,6 +15,7 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
@@ -27,9 +28,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetProvider;
+
+import static android.R.attr.id;
 
 
 /**
@@ -57,7 +60,6 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        Log.i(LOG_TAG,"onCreateしましたよー");
     }
 
     //To display DB info when user back from other activity
@@ -154,22 +156,21 @@ public class CatalogActivity extends AppCompatActivity {
 
         //Insert the new row, returning the primary key value of the new row
 //        long newRowId = mProvider.insert(PetEntry.CONTENT_URI, values);//このプライマリーキわず
-        Log.v(LOG_TAG, "just before getContentResolver().insert()");
 
         Uri mNewUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+        int newRowId = (int)ContentUris.parseId(mNewUri);
 
-        Log.v(LOG_TAG, "New Uri " + mNewUri.toString());
+        Toast.makeText(this, getResources().getString(R.string.insert_dummy)
+                + newRowId, Toast.LENGTH_SHORT).show();
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        Log.i(LOG_TAG, "itemSelected");
 
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
-                Log.v(LOG_TAG, "just before insertPet() excuted");
                 insertPet();
                 displayDatabaseInfo();
                 return true;
