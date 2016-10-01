@@ -213,20 +213,27 @@ public class PetProvider extends ContentProvider {
         //1.Do sanity check
         //Update time name check: No need to check "name". In update time, its OK if name is null.
 
+        // If the {@link PetEntry#COLUMN_PET_NAME} key is present,
+        // check that the name value is not null.
+        if (values.containsKey(PetEntry.COLUMN_PET_NAME)) {
+            String name = values.getAsString(PetEntry.COLUMN_PET_NAME);
+            if (name == null) {//I thought no keys, no null check. Key exists, no null check.
+            // But keys presence and values presence is separated case... Of course you need to do it!
+                throw new IllegalArgumentException("Pet requires a name");
+            }
+        }
+
         //Insert/Update time breed check: No need to check the "breed", any value is valid (including null).
 
-        //Update time gender check: Null is OK. Unexpected int is no good.
         //Check if ContentValue contains gender for update target.
         if(values.containsKey(PetEntry.COLUMN_PET_GENDER)){
             Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
-            if(!PetEntry.isValidGender(gender)){
+            if(gender == null || !PetEntry.isValidGender(gender)){
                 throw new IllegalArgumentException("Pet requires valid gender");
             }
         }
 
-        //Insert/Update time: Same sanity check.
         //Check if ContentValue contains weight for update target.
-
         if(values.containsKey(PetEntry.COLUMN_PET_WEIGHT)){
             Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
             if (weight != null && weight < 0) {
@@ -238,10 +245,8 @@ public class PetProvider extends ContentProvider {
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
         //3. do update
-        int numOfRows = db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
-
         //4. get number of updated rows
-        return numOfRows;
+        return db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
     }
 
     /**
