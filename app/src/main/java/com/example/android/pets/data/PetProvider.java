@@ -3,13 +3,13 @@ package com.example.android.pets.data;
 import android.content.ContentProvider;
 import android.content.ContentUris;
 import android.content.ContentValues;
-import android.content.Context;
 import android.content.UriMatcher;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
+import android.util.Log;
+
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.CatalogActivity;
 
 import static android.R.attr.id;
 
@@ -122,8 +122,6 @@ public class PetProvider extends ContentProvider {
         return cursor;
     }
 
-
-
     /**
      * Insert new data into the provider with the given ContentValues.
      */
@@ -147,13 +145,18 @@ public class PetProvider extends ContentProvider {
      */
     private Uri insertPet(Uri uri, ContentValues values) {
 
-        uri = getContext().getContentResolver().insert(uri, values);
+        //1.Gets the data repository in write mode
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
 
-        // Once we know the ID of the new row in the table,
-        // return the new URI with the ID appended to the end of it
+        //2.insert
+        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
+
+        Log.v(LOG_TAG, "New row ID " + newRowId);
+
+        //3.Return the new URI with the ID appended to the end of it.
+        //           New row ID is automatically retrieved.
         return ContentUris.withAppendedId(uri, id);
     }
-
 
     /**
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
