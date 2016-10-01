@@ -147,16 +147,14 @@ public class CatalogActivity extends AppCompatActivity {
         int dummyGender = PetEntry.GENDER_MALE;
         int dummyWeight = 7;
 
-        //Create a new map of values, where column names are the keys
+        //1.Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
         values.put(PetEntry.COLUMN_PET_NAME, dummyName);
         values.put(PetEntry.COLUMN_PET_BREED, dummyBreed);
         values.put(PetEntry.COLUMN_PET_GENDER, dummyGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, dummyWeight);
 
-        //Insert the new row, returning the primary key value of the new row
-//        long newRowId = mProvider.insert(PetEntry.CONTENT_URI, values);//このプライマリーキわず
-
+        //Do activity version insert for a new row
         Uri mNewUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
         int newRowId = (int)ContentUris.parseId(mNewUri);
 
