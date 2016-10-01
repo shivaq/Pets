@@ -15,8 +15,10 @@
  */
 package com.example.android.pets;
 
+import android.content.ContentUris;
 import android.content.ContentValues;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
 import android.support.v7.app.AppCompatActivity;
@@ -31,11 +33,8 @@ import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.Toast;
 
-import com.example.android.pets.data.PetContract;
 import com.example.android.pets.data.PetContract.PetEntry;
 import com.example.android.pets.data.PetDbHelper;
-
-import static android.R.attr.name;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -135,46 +134,44 @@ public class EditorActivity extends AppCompatActivity {
         //instantiate subclass of SQLiteOpenHelper and pass context of current activity
         PetDbHelper mDbHelper = new PetDbHelper(this);
 
-        //get the data repository in write mode
+        //1.get the data repository in write mode
         SQLiteDatabase db = mDbHelper.getWritableDatabase();
 
-        //Convert editText input to each columns values
+        //2.Convert editText input to each columns values
         String name = mNameEditText.getText().toString().trim();//trim() で前後の不要な空白を削除
-        String breed = mNameEditText.getText().toString().trim();
+        String breed = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
 
         int weight;
 
-        //Escape NumberFormatException. If we try to convert "" to int, there is an error.
+        //2-1.Escape NumberFormatException. If we try to convert "" to int, there is an error.
         if(weightString.equals("")) {
-            Log.v("EditorActivity", "This is empty String");
+            Log.v(LOG_TAG, "This is empty String");
                   weight = 12345;
         } else {
-            Log.v("EditorActivity", "weightString is " + weightString + " desu");
+            Log.v(LOG_TAG, "weightString is " + weightString + " desu");
             weight = Integer.parseInt(weightString);
         }
 
-        //Create a new map of values, where column names are the keys
+        //3.Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
-
-        Log.v(LOG_TAG, "done initialize ContentValues");
-
         values.put(PetEntry.COLUMN_PET_NAME, name);
         values.put(PetEntry.COLUMN_PET_BREED, breed);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
-        Log.v("EditorActivity", "done values.put");
 
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);
-        Log.v("EditorActivity", "done db.insert");
+        //4.get ContentResolver and make it insert data
+        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+        long newRowId = ContentUris.parseId(newUri);
 
         //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
         //Toast if insert data was successful
-        if (newRowId == -1) {
-            Toast.makeText(this, getResources().getString(R.string.error_registering), Toast.LENGTH_SHORT).show();
+        if (newUri == null) {
+            Toast.makeText(this, getResources().getString(R.string.error_registering),
+                    Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, getResources().getString(R.string.pet_register_success)
-                    + newRowId, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, getResources().getString(R.string.pet_register_success),
+                    Toast.LENGTH_SHORT).show();
         }
     }
 
