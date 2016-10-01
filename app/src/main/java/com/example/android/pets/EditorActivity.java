@@ -142,7 +142,15 @@ public class EditorActivity extends AppCompatActivity {
         String breed = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
 
-        int weight = Integer.parseInt(weightString);
+        //2-2.Empty weightString cannot do parseInt. if its empty, set default value
+        int weight;
+
+        if(PetEntry.isValidWeight(weightString)){
+            weight = Integer.parseInt(weightString);
+        } else {
+            Log.i(LOG_TAG, "weight が空だと int にパースできないので、0 にしますね。");
+            weight = 0;
+        }
 
         //3.Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
