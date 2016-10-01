@@ -12,6 +12,7 @@ import android.util.Log;
 import com.example.android.pets.data.PetContract.PetEntry;
 
 import static android.R.attr.id;
+import static android.R.attr.key;
 import static android.R.attr.name;
 
 /**
@@ -181,6 +182,7 @@ public class PetProvider extends ContentProvider {
      * Updates the data at the given selection and selection arguments, with the new ContentValues.
      */
     @Override
+    //this is ContentProviders update() method, differ from SQLDatabases update() method in its parameters.
     public int update(Uri uri, ContentValues contentValues, String selection,
                       String[] selectionArgs) {
         final int match = sUriMatcher.match(uri);
@@ -191,6 +193,8 @@ public class PetProvider extends ContentProvider {
 
                 //row ID was passed from Activity to resolver to Provider.
                 selection = PetEntry._ID + "=?";
+
+                //extracting out the ID with ContentUris.parseId(uri)
                 selectionArgs = new String[] { String.valueOf(ContentUris.parseId(uri)) };
                 return updatePet(uri, contentValues, selection, selectionArgs);
             default:
@@ -206,10 +210,38 @@ public class PetProvider extends ContentProvider {
      */
     private int updatePet(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
 
-        // TODO: Update the selected pets in the pets database table with the given ContentValues
+        //1.Do sanity check
+        //Update time name check: No need to check "name". In update time, its OK if name is null.
 
-        // TODO: Return the number of rows that were affected
-        return 0;
+        //Insert/Update time breed check: No need to check the "breed", any value is valid (including null).
+
+        //Update time gender check: Null is OK. Unexpected int is no good.
+        //Check if ContentValue contains gender for update target.
+        if(values.containsKey(PetEntry.COLUMN_PET_GENDER)){
+            Integer gender = values.getAsInteger(PetEntry.COLUMN_PET_GENDER);
+            if(!PetEntry.isValidGender(gender)){
+                throw new IllegalArgumentException("Pet requires valid gender");
+            }
+        }
+
+        //Insert/Update time: Same sanity check.
+        //Check if ContentValue contains weight for update target.
+
+        if(values.containsKey(PetEntry.COLUMN_PET_WEIGHT)){
+            Integer weight = values.getAsInteger(PetEntry.COLUMN_PET_WEIGHT);
+            if (weight != null && weight < 0) {
+                throw new IllegalArgumentException("Pet requires valid weight");
+            }
+        }
+
+        //2.get db obj
+        SQLiteDatabase db = mDbHelper.getWritableDatabase();
+
+        //3. do update
+        int numOfRows = db.update(PetEntry.TABLE_NAME, values, selection, selectionArgs);
+
+        //4. get number of updated rows
+        return numOfRows;
     }
 
     /**
