@@ -30,21 +30,15 @@ public class PetDbHelper extends SQLiteOpenHelper {
      */
     @Override
     public void onCreate(SQLiteDatabase db) {//レクチャーによると、デフォが長いからdb にリネームしてるって。
-        //Create String for SQL statement Data types
-        final String TEXT_TYPE = " TEXT";
-        final String INTEGER_TYPE = " INTEGER";
-        final String COMMA_SEP = ",";
 
         //Create a String for SQL statement to create pets table
-        //onCreate される時に何を create したい？ table だろ？
         final String SQL_CREATE_ENTRIES =
-                "CREATE TABLE " + PetEntry.TABLE_NAME + " (" +
-                        PetEntry._ID + INTEGER_TYPE +" PRIMARY KEY," +
-                        PetEntry.COLUMN_PET_NAME + TEXT_TYPE + COMMA_SEP +
-                        PetEntry.COLUMN_PET_BREED + TEXT_TYPE + COMMA_SEP +
-                        PetEntry.COLUMN_PET_GENDER + INTEGER_TYPE + COMMA_SEP +
-                        PetEntry.COLUMN_PET_WEIGHT + INTEGER_TYPE +
-                        " )";
+                "CREATE TABLE " + PetEntry.TABLE_NAME + " ("
+                        + PetEntry._ID + " INTEGER PRIMARY KEY AUTOINCREMENT, "
+                        + PetEntry.COLUMN_PET_NAME + " TEXT NOT NULL, "
+                        + PetEntry.COLUMN_PET_BREED + " TEXT, "
+                        + PetEntry.COLUMN_PET_GENDER + " INTEGER NOT NULL, "
+                        + PetEntry.COLUMN_PET_WEIGHT + " INTEGER NOT NULL DEFAULT 0);";
 
         //execSQL は static ではないので、インスタンスメソッドなので、インスタンス経由で参照
         db.execSQL(SQL_CREATE_ENTRIES);
