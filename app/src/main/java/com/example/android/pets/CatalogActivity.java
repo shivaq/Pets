@@ -18,7 +18,7 @@ package com.example.android.pets;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
@@ -28,8 +28,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
-import com.example.android.pets.data.PetDbHelper;
 import com.example.android.pets.data.PetContract.PetEntry;
+import com.example.android.pets.data.PetProvider;
 
 
 /**
@@ -37,8 +37,10 @@ import com.example.android.pets.data.PetContract.PetEntry;
  */
 public class CatalogActivity extends AppCompatActivity {
 
-    //DB helper that will provide us access to the DB
-    private PetDbHelper mDbHelper;//メンバーとして作成 →onCreate でインスタンス化
+    /**
+     * Tag for the log messages
+     */
+    public static final String LOG_TAG = CatalogActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,10 +57,7 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
-        //To access our database, we instantiate our subclass of SQLiteOpenHelper
-        //and pass the context, which is the current activity
-        mDbHelper = new PetDbHelper(this);//onCreate内で、DBヘルパーはインスタンス化するんだね
-
+        Log.i(LOG_TAG,"onCreateしましたよー");
     }
 
     //To display DB info when user back from other activity
@@ -82,10 +81,6 @@ public class CatalogActivity extends AppCompatActivity {
                 PetEntry.COLUMN_PET_BREED
         };
 
-        String selection = PetEntry.COLUMN_PET_GENDER + "=?";
-
-        String[] selectionArgs = {"2"};
-
         //Note!!! This is a bad behavior to contact with database directly.
         //Instead, do contact with Content Provider!!!
 
@@ -93,8 +88,8 @@ public class CatalogActivity extends AppCompatActivity {
         Cursor cursor = getContentResolver().query(
                 PetEntry.CONTENT_URI,
                 projection,
-                selection,
-                selectionArgs,
+                null,
+                null,
                 null);
 
         TextView displayView = (TextView) findViewById(R.id.text_view_pet);
@@ -144,9 +139,6 @@ public class CatalogActivity extends AppCompatActivity {
 
     private void insertPet() {
 
-        //Gets the data repository in write mode
-        SQLiteDatabase db = mDbHelper.getWritableDatabase();//データレポジトリ取得。書き込みモード
-
         //Define dummy values
         String dummyName = "Toto";
         String dummyBreed = "Terrier";
@@ -161,17 +153,23 @@ public class CatalogActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_WEIGHT, dummyWeight);
 
         //Insert the new row, returning the primary key value of the new row
-        long newRowId = db.insert(PetEntry.TABLE_NAME, null, values);//このプライマリーキわず
+//        long newRowId = mProvider.insert(PetEntry.CONTENT_URI, values);//このプライマリーキわず
+        Log.v(LOG_TAG, "just before getContentResolver().insert()");
 
-        Log.v("CatalogActivity", "New row ID " + newRowId);
+        Uri mNewUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+
+        Log.v(LOG_TAG, "New Uri " + mNewUri.toString());
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
+        Log.i(LOG_TAG, "itemSelected");
+
         // User clicked on a menu option in the app bar overflow menu
         switch (item.getItemId()) {
             // Respond to a click on the "Insert dummy data" menu option
             case R.id.action_insert_dummy_data:
+                Log.v(LOG_TAG, "just before insertPet() excuted");
                 insertPet();
                 displayDatabaseInfo();
                 return true;
