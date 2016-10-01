@@ -68,6 +68,8 @@ public class EditorActivity extends AppCompatActivity {
      */
     private int mGender = 0;
 
+    private static final String LOG_TAG = EditorActivity.class.getSimpleName();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -155,7 +157,7 @@ public class EditorActivity extends AppCompatActivity {
         //Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
 
-        Log.v("EditorActivity", "done initialize ContentValues");
+        Log.v(LOG_TAG, "done initialize ContentValues");
 
         values.put(PetEntry.COLUMN_PET_NAME, name);
         values.put(PetEntry.COLUMN_PET_BREED, breed);
