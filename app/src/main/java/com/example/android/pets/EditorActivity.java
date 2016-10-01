@@ -142,16 +142,7 @@ public class EditorActivity extends AppCompatActivity {
         String breed = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
 
-        int weight;
-
-        //2-1.Escape NumberFormatException. If we try to convert "" to int, there is an error.
-        if(weightString.equals("")) {
-            Log.v(LOG_TAG, "This is empty String");
-                  weight = 12345;
-        } else {
-            Log.v(LOG_TAG, "weightString is " + weightString + " desu");
-            weight = Integer.parseInt(weightString);
-        }
+        int weight = Integer.parseInt(weightString);
 
         //3.Create a new map of values, where column names are the keys
         ContentValues values = new ContentValues();
@@ -160,6 +151,7 @@ public class EditorActivity extends AppCompatActivity {
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
+        Log.i(LOG_TAG, "Pets name is " + name + " isn't it null?");
         //4.get ContentResolver and make it insert data
         Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
         long newRowId = ContentUris.parseId(newUri);
