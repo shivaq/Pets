@@ -253,6 +253,7 @@ public class PetProvider extends ContentProvider {
      * Delete the data at the given selection and selection arguments.
      */
     @Override
+    //Returns the number of deleted rows.
     public int delete(Uri uri, String selection, String[] selectionArgs) {
         // Get writable database
         SQLiteDatabase database = mDbHelper.getWritableDatabase();
