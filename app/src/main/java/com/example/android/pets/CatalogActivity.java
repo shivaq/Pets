@@ -58,6 +58,14 @@ public class CatalogActivity extends AppCompatActivity {
             }
         });
 
+
+        // Find the ListView which will be populated with the pet data
+        ListView petListView = (ListView) findViewById(R.id.list_view_pet);
+
+        // Find and set empty view on the ListView, so that it only shows when the list has 0 items.
+        View emptyView = findViewById(R.id.empty_view);
+        petListView.setEmptyView(emptyView);
+
     }
 
     //To display DB info when user back from other activity
@@ -92,6 +100,7 @@ public class CatalogActivity extends AppCompatActivity {
 
         //3.Find ListView to populate
         ListView petListView = (ListView) findViewById(R.id.list_view_pet);
+
         //4.Set up CursorAdapter
         PetCursorAdapter petAdapter = new PetCursorAdapter(this, cursor);
         //5.Attach CursorAdapter to the ListView
