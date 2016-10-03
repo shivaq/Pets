@@ -74,4 +74,7 @@
     <string name="title_edit_pet">Edit Pet</string>
     <string name="update_failed">Update failed</string>
     <string name="update_succeed">Update succeed!!</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
 </resources>

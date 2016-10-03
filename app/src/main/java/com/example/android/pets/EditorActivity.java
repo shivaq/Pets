@@ -19,17 +19,20 @@ import android.app.LoaderManager;
 import android.content.ContentUris;
 import android.content.ContentValues;
 import android.content.CursorLoader;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -50,6 +53,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     // Content Uri for the existing pet (null for it's a new pet)
     private Uri mCurrentPetUri;
+
+    //Check if field has some change
+    private boolean mPetHasChanged = false;
 
     /**
      * EditText field to enter the pet's name
@@ -77,6 +83,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
      */
     private int mGender = 0;
 
+
     private static final String LOG_TAG = EditorActivity.class.getSimpleName();
 
     @Override
@@ -89,6 +96,12 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mBreedEditText = (EditText) findViewById(R.id.edit_pet_breed);
         mWeightEditText = (EditText) findViewById(R.id.edit_pet_weight);
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
+
+        // Set touch listener to check if they changed
+        mNameEditText.setOnTouchListener(mTouchListener);
+        mBreedEditText.setOnTouchListener(mTouchListener);
+        mWeightEditText.setOnTouchListener(mTouchListener);
+        mGenderSpinner.setOnTouchListener(mTouchListener);
 
         setupSpinner();
 
@@ -103,6 +116,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         //So delete label of this Activity in manifest
         if (mCurrentPetUri == null) {
             setTitle(getString(R.string.title_add_a_pet));
+            //新規作成モードのときは、オプションメニュー内容を変える ※Delete の選択肢を表示させない
+            //invalidateOptionsMenu が起動すると、onPrepareOptionsMenu() が起動する
+            invalidateOptionsMenu();
         } else {
             setTitle(getString(R.string.title_edit_pet));
             //Initializes the CursorLoader.
@@ -166,15 +182,15 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
 
         //Check if all the fields are empty.
-        if(mCurrentPetUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(breed) &&
-                mGender == PetEntry.GENDER_UNKNOWN && TextUtils.isEmpty(weightString)){
+        if (mCurrentPetUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(breed) &&
+                mGender == PetEntry.GENDER_UNKNOWN && TextUtils.isEmpty(weightString)) {
             //If all the fields are empty, no need to continue. Just leave this Activity
             return;
         }
 
         //2-2.Empty weightString cannot do parseInt. if its empty, set default value
         int weight = 0;
-        if (!TextUtils.isEmpty(weightString)){
+        if (!TextUtils.isEmpty(weightString)) {
             weight = Integer.parseInt(weightString);
         }
 
@@ -221,11 +237,33 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+
+
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
         // This adds menu items to the app bar.
         getMenuInflater().inflate(R.menu.menu_editor, menu);
+        return true;
+    }
+
+    /**
+     * メニューが押下されるたびに、表示の直前にコールされる。
+     *
+     イベントが発生し、メニューをアップデートするときは、
+     invalidateOptionsMenu() を呼び出して、
+     システムが onPrepareOptionsMenu() を呼び出すようリクエストする
+     */
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        super.onPrepareOptionsMenu(menu);
+        // 現在のActivity のモードが Add モードかどうかをチェックして、、、
+        if (mCurrentPetUri == null) {
+            //delete のメニューアイテム参照を取得し、、、
+            MenuItem menuItem = menu.findItem(R.id.action_delete);
+            //見えなくさせる。
+            menuItem.setVisible(false);
+        }
         return true;
     }
 
@@ -245,8 +283,27 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
                 return true;
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
-                // Navigate back to parent activity (CatalogActivity)
-                NavUtils.navigateUpFromSameTask(this);
+
+                // If the pet hasn't changed, continue with navigating up to parent activity
+                if (!mPetHasChanged) {
+                    NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                    return true;
+                }
+
+                // Setup a dialog to warn the user.
+                // Create a click listener to handle the user confirming that
+                // changes should be discarded.
+                DialogInterface.OnClickListener discardButtonClickListener =
+                        new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialogInterface, int i) {
+                                // User clicked "Discard" button, navigate to parent activity.
+                                NavUtils.navigateUpFromSameTask(EditorActivity.this);
+                            }
+                        };
+
+                // Show a dialog that notifies the user they have unsaved changes
+                showUnsavedChangesDialog(discardButtonClickListener);
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -308,4 +365,71 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         mGenderSpinner.setSelection(PetEntry.GENDER_UNKNOWN);
         mWeightEditText.setText(null);
     }
+
+
+
+
+
+    //Create touch listener for all fields
+    private View.OnTouchListener mTouchListener = new View.OnTouchListener() {
+        @Override
+        public boolean onTouch(View view, MotionEvent motionEvent) {
+            mPetHasChanged = true;
+            return false;
+        }
+    };
+
+    private void showUnsavedChangesDialog(
+            DialogInterface.OnClickListener discardButtonClickListener) {
+
+        // Create an AlertDialog.Builder and ,click listeners
+        // for the positive and negative buttons on the dialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        //set the message
+        builder.setMessage(R.string.unsaved_changes_dialog_msg);
+        // Set positive Button
+        builder.setPositiveButton(R.string.discard, discardButtonClickListener);
+
+        // Set negative Button with dialog.dismiss function
+        builder.setNegativeButton(
+                R.string.keep_editing,
+                new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        // User clicked the "Keep editing" button,
+                        // so dismiss the dialog and continue editing the pet.
+                        if (dialog != null) {
+                            dialog.dismiss();
+                        }
+                    }
+                });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+    }
+
+
+    @Override
+    public void onBackPressed() {
+        // If the pet hasn't changed, continue with handling back button press
+        if (!mPetHasChanged) {
+            super.onBackPressed();
+            return;
+        }
+
+
+        // Create a click listener to handle the user confirming that changes should be discarded.
+        DialogInterface.OnClickListener discardButtonClickListener =
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialogInterface, int i) {
+                        // User clicked "Discard" button, close the current activity.
+                        finish();
+                    }
+                };
+
+        // Show dialog that there are unsaved changes
+        showUnsavedChangesDialog(discardButtonClickListener);
+    }
+
 }
