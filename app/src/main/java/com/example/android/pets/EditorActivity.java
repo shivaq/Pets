@@ -17,6 +17,7 @@ package com.example.android.pets;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
@@ -81,6 +82,23 @@ public class EditorActivity extends AppCompatActivity {
         mGenderSpinner = (Spinner) findViewById(R.id.spinner_gender);
 
         setupSpinner();
+
+        //Examine the intent that was used to launch this Activity
+        Intent fromCatalogIntent = getIntent();
+//        Uri uriToEdit = Uri.parse(fromCatalogIntent.getStringExtra("URI_TO_EDIT"));
+//        Uri uriToEdit = fromCatalogIntent.getParcelableExtra("URI_TO_EDIT");
+        Uri currentPetUri = fromCatalogIntent.getData();
+
+        //Change title depend on how this activity launched.
+        //And here we set title in code, we don't need label definition of this Activity.
+        //So delete label of this Activity in manifest
+        if(currentPetUri == null){
+            setTitle(getString(R.string.title_add_a_pet));
+        } else {
+            setTitle(getString(R.string.title_edit_pet));
+        }
+
+        Log.i(LOG_TAG,"I got Uri  →" + currentPetUri);
 
     }
 

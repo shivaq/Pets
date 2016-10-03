@@ -37,6 +37,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.Toast;
 
@@ -89,6 +90,25 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
         //5.Attach CursorAdapter to the ListView
         petListView.setAdapter(mPetAdapter);
+
+        //Set up onItemClickListener
+        petListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long id) {
+                //Create Intent from here to EditorActivity
+                Intent toEditIntent = new Intent(CatalogActivity.this, EditorActivity.class);
+
+                //Create Uri for selected item
+                Uri uriToEdit = ContentUris.withAppendedId(PetEntry.CONTENT_URI, id);
+//                toEditIntent.putExtra("URI_TO_EDIT", uriToEdit);
+
+                // Set the URI on the data field of the intent
+                toEditIntent.setData(uriToEdit);
+                //PutExtra on Intent
+                toEditIntent.putExtra("mode", 2);
+                startActivity(toEditIntent);
+            }
+        });
 
         //Initializes the CursorLoader.
         //The PET_LOADER value is eventually passed to onCreateLoader();
