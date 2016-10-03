@@ -39,7 +39,6 @@ import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 
-import static com.example.android.pets.data.PetContract.PetEntry.COLUMN_PET_WEIGHT;
 
 /**
  * Allows user to create a new pet or edit an existing one.
@@ -165,14 +164,18 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         String breed = mBreedEditText.getText().toString().trim();
         String weightString = mWeightEditText.getText().toString().trim();
 
-        //2-2.Empty weightString cannot do parseInt. if its empty, set default value
-        int weight;
 
-        if (PetEntry.isValidWeight(weightString)) {
+        //Check if all the fields are empty.
+        if(mCurrentPetUri == null && TextUtils.isEmpty(name) && TextUtils.isEmpty(breed) &&
+                mGender == PetEntry.GENDER_UNKNOWN && TextUtils.isEmpty(weightString)){
+            //If all the fields are empty, no need to continue. Just leave this Activity
+            return;
+        }
+
+        //2-2.Empty weightString cannot do parseInt. if its empty, set default value
+        int weight = 0;
+        if (!TextUtils.isEmpty(weightString)){
             weight = Integer.parseInt(weightString);
-        } else {
-            Log.i(LOG_TAG, "weight が空だと int にパースできないので、0 にしますね。");
-            weight = 0;
         }
 
         //3.Create a new map of values, where column names are the keys
@@ -180,7 +183,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PetEntry.COLUMN_PET_NAME, name);
         values.put(PetEntry.COLUMN_PET_BREED, breed);
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
-        values.put(COLUMN_PET_WEIGHT, weight);
+        values.put(PetEntry.COLUMN_PET_WEIGHT, weight);
 
 
         if (mCurrentPetUri == null) {
