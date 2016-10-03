@@ -69,4 +69,7 @@
 
     <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
     <string name="empty_view_subtitle_text">Get started by adding a pet</string>
+
+    <string name="title_add_a_pet">Add a Pet</string>
+    <string name="title_edit_pet">Edit Pet</string>
 </resources>
