@@ -22,7 +22,6 @@ import android.content.CursorLoader;
 import android.content.Intent;
 import android.content.Loader;
 import android.database.Cursor;
-import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.NavUtils;
@@ -39,14 +38,13 @@ import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.example.android.pets.data.PetContract.PetEntry;
-import com.example.android.pets.data.PetDbHelper;
 
 import static com.example.android.pets.data.PetContract.PetEntry.COLUMN_PET_WEIGHT;
 
 /**
  * Allows user to create a new pet or edit an existing one.
  */
-public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor>{
+public class EditorActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
     // Identifies a particular Loader being used in this component
     private static final int PET_LOADER = 0;
@@ -104,7 +102,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         //Change title depend on how this activity launched.
         //And here we set title in code, we don't need label definition of this Activity.
         //So delete label of this Activity in manifest
-        if(mCurrentPetUri == null){
+        if (mCurrentPetUri == null) {
             setTitle(getString(R.string.title_add_a_pet));
         } else {
             setTitle(getString(R.string.title_edit_pet));
@@ -113,7 +111,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
             getLoaderManager().initLoader(PET_LOADER, null, this);
         }
 
-        Log.i(LOG_TAG,"I got Uri  →" + mCurrentPetUri);
+        Log.i(LOG_TAG, "I got Uri  →" + mCurrentPetUri);
 
     }
 
@@ -160,7 +158,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     /**
      * Get user input from edittext and save new pet into database
      */
-    private void insertPet() {
+    private void savePet() {
 
         //2.Convert editText input to each columns values
         String name = mNameEditText.getText().toString().trim();//trim() で前後の不要な空白を削除
@@ -170,7 +168,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         //2-2.Empty weightString cannot do parseInt. if its empty, set default value
         int weight;
 
-        if(PetEntry.isValidWeight(weightString)){
+        if (PetEntry.isValidWeight(weightString)) {
             weight = Integer.parseInt(weightString);
         } else {
             Log.i(LOG_TAG, "weight が空だと int にパースできないので、0 にしますね。");
@@ -184,19 +182,39 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         values.put(PetEntry.COLUMN_PET_GENDER, mGender);
         values.put(COLUMN_PET_WEIGHT, weight);
 
-        Log.i(LOG_TAG, "Pets name is " + name + " isn't it null?");
-        //4.get ContentResolver and make it insert data
-        Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
-        long newRowId = ContentUris.parseId(newUri);
 
-        //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
-        //Toast if insert data was successful
-        if (newUri == null) {
-            Toast.makeText(this, getResources().getString(R.string.error_registering),
-                    Toast.LENGTH_SHORT).show();
+        if (mCurrentPetUri == null) {
+            //4.get ContentResolver and make it insert data
+            Uri newUri = getContentResolver().insert(PetEntry.CONTENT_URI, values);
+
+            //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
+            //Toast if insert data was successful
+            if (newUri == null) {
+                Toast.makeText(this, getResources().getString(R.string.error_registering),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.pet_register_success),
+                        Toast.LENGTH_SHORT).show();
+            }
         } else {
-            Toast.makeText(this, getResources().getString(R.string.pet_register_success),
-                    Toast.LENGTH_SHORT).show();
+            //4.get ContentResolver and make it update data
+            //Pass in null for the selection and selectionArgs.
+            //Because mCurrentPetUri already identify target row to modify.
+            int mUpdatedRows = getContentResolver().update(
+                    mCurrentPetUri,
+                    values,
+                    null,
+                    null);
+
+            //※※ ユーザーに、登録の成否を伝えるのは This is a really critical app-building skill.
+            //Toast if insert data was successful
+            if (mUpdatedRows == 0) {
+                Toast.makeText(this, getResources().getString(R.string.update_failed),
+                        Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.update_succeed),
+                        Toast.LENGTH_SHORT).show();
+            }
         }
     }
 
@@ -214,7 +232,7 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
         switch (item.getItemId()) {
             // Respond to a click on the "Save" menu option
             case R.id.action_save:
-                insertPet();
+                savePet();
                 finish();//exit EditActivity to CatalogActivity
                 return true;
 

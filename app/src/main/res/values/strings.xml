@@ -72,4 +72,6 @@
 
     <string name="title_add_a_pet">Add a Pet</string>
     <string name="title_edit_pet">Edit Pet</string>
+    <string name="update_failed">Update failed</string>
+    <string name="update_succeed">Update succeed!!</string>
 </resources>
