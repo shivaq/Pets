@@ -238,7 +238,6 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu options from the res/menu/menu_editor.xml file.
@@ -249,10 +248,10 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
     /**
      * メニューが押下されるたびに、表示の直前にコールされる。
-     *
-     イベントが発生し、メニューをアップデートするときは、
-     invalidateOptionsMenu() を呼び出して、
-     システムが onPrepareOptionsMenu() を呼び出すようリクエストする
+     * <p>
+     * イベントが発生し、メニューをアップデートするときは、
+     * invalidateOptionsMenu() を呼び出して、
+     * システムが onPrepareOptionsMenu() を呼び出すようリクエストする
      */
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -279,8 +278,9 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
 
             // Respond to a click on the "Delete" menu option
             case R.id.action_delete:
-                // Do nothing for now
+                showDeleteConfirmationDialog();
                 return true;
+
             // Respond to a click on the "Up" arrow button in the app bar
             case android.R.id.home:
 
@@ -336,26 +336,28 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     @Override
     public void onLoadFinished(Loader<Cursor> loader, Cursor cursor) {
 
-
         //move cursor to 0th position
         cursor.moveToFirst();
 
-        // Update the editor fields with the data for the current pet
-        int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME);
-        int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
-        int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
-        int weightColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
+        if( cursor != null && cursor.moveToFirst()){
 
-        String petName = cursor.getString(nameColumnIndex);
-        String petBreed = cursor.getString(breedColumnIndex);
-        int petGender = cursor.getInt(genderColumnIndex);
-        int petWeight = cursor.getInt(weightColumnIndex);
+            // Update the editor fields with the data for the current pet
+            int nameColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_NAME);
+            int breedColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_BREED);
+            int genderColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_GENDER);
+            int weightColumnIndex = cursor.getColumnIndex(PetEntry.COLUMN_PET_WEIGHT);
 
+            String petName = cursor.getString(nameColumnIndex);
+            String petBreed = cursor.getString(breedColumnIndex);
+            int petGender = cursor.getInt(genderColumnIndex);
+            int petWeight = cursor.getInt(weightColumnIndex);
 
-        mNameEditText.setText(petName);
-        mBreedEditText.setText(petBreed);
-        mGenderSpinner.setSelection(petGender);
-        mWeightEditText.setText(String.valueOf(petWeight));
+            mNameEditText.setText(petName);
+            mBreedEditText.setText(petBreed);
+            mGenderSpinner.setSelection(petGender);
+            mWeightEditText.setText(String.valueOf(petWeight));
+        }
+
     }
 
     @Override
@@ -367,7 +369,50 @@ public class EditorActivity extends AppCompatActivity implements LoaderManager.L
     }
 
 
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_dialog_msg);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
+                deletePet();
+                finish();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
 
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
+    }
+
+    /**
+     * Perform the deletion of the pet in the database.
+     */
+    private void deletePet() {
+
+        //編集画面じゃなかったら、delete ボタンが出ないはずなのに、ここでもチェックする効用は何？
+        if(mCurrentPetUri != null){
+            int deletedRows = getContentResolver().delete(mCurrentPetUri, null, null);
+
+            if (deletedRows == 0) {
+                Toast.makeText(this, getResources().getString(R.string.error_delete), Toast.LENGTH_SHORT).show();
+            } else {
+                Toast.makeText(this, getResources().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 
 
     //Create touch listener for all fields
