@@ -17,6 +17,7 @@ package com.example.android.pets;
 
 import android.content.ContentUris;
 import android.content.ContentValues;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
@@ -33,6 +34,7 @@ import android.app.LoaderManager;
 import android.content.CursorLoader;
 import android.content.Loader;
 
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -156,6 +158,43 @@ import android.support.v4.content.Loader;
                 + newRowId, Toast.LENGTH_SHORT).show();
     }
 
+    private void deletePet(){
+        int deletedRows = getContentResolver().delete(PetEntry.CONTENT_URI, null, null);
+
+        if (deletedRows == 0) {
+            Toast.makeText(this, getResources().getString(R.string.error_delete), Toast.LENGTH_SHORT).show();
+        } else {
+            Toast.makeText(this, getResources().getString(R.string.delete_success), Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    private void showDeleteConfirmationDialog() {
+        // Create an AlertDialog.
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.delete_em_all);
+        builder.setPositiveButton(R.string.delete, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Delete" button, so delete the pet.
+                deletePet();
+            }
+        });
+        builder.setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int id) {
+                // User clicked the "Cancel" button, so dismiss the dialog
+                // and continue editing the pet.
+                if (dialog != null) {
+                    dialog.dismiss();
+                }
+            }
+        });
+
+        // Create and show the AlertDialog
+        AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+
+
+    }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
 
@@ -167,7 +206,7 @@ import android.support.v4.content.Loader;
                 return true;
             // Respond to a click on the "Delete all entries" menu option
             case R.id.action_delete_all_entries:
-                // Do nothing for now
+                showDeleteConfirmationDialog();
                 return true;
         }
         return super.onOptionsItemSelected(item);

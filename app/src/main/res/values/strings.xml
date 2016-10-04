@@ -94,4 +94,6 @@
     <string name="cancel">Cancel</string>
     <string name="error_delete">Error with deleting pet..</string>
     <string name="delete_success">Pet deleted.</string>
+    <string name="delete_em_all">Delete them all? Are you sure?</string>
+    <string name="unknown_breed">Unknown breed</string>
 </resources>

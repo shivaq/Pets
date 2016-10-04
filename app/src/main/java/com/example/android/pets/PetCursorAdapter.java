@@ -2,6 +2,7 @@ package com.example.android.pets;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,12 +11,16 @@ import android.widget.TextView;
 
 import com.example.android.pets.data.PetContract.PetEntry;
 
+import static android.icu.lang.UCharacter.GraphemeClusterBreak.L;
+
 /**
  * {@link PetCursorAdapter} is an adapter for a list or grid view
  * that uses a {@link Cursor} of pet data as its data source.
  * This adapter knows how to create list items for each row of pet data in the {@link Cursor}.
  */
 public class PetCursorAdapter extends CursorAdapter {
+
+    private static final String LOG_TAG = PetCursorAdapter.class.getSimpleName();
 
     /**
      * Constructs a new {@link PetCursorAdapter}.
@@ -32,7 +37,7 @@ public class PetCursorAdapter extends CursorAdapter {
      *
      * @param context app context
      * @param cursor  The cursor from which to get the data.
-     *                 The cursor is already moved to the correct position.
+     *                The cursor is already moved to the correct position.
      * @param parent  The parent to which the new view is attached to
      * @return the newly created list item view.
      */
@@ -67,7 +72,11 @@ public class PetCursorAdapter extends CursorAdapter {
 
         //Populate fields with extracted properties
         nameTextView.setText(petName);
-        breedTextView.setText(petBreed);
+        if (petBreed.equals("")) {
+            breedTextView.setText(R.string.unknown_breed);
+        } else {
+            breedTextView.setText(petBreed);
+        }
 
     }
 }
