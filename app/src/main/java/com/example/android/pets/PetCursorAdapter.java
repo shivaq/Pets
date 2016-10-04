@@ -2,6 +2,7 @@ package com.example.android.pets;
 
 import android.content.Context;
 import android.database.Cursor;
+import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -72,7 +73,7 @@ public class PetCursorAdapter extends CursorAdapter {
 
         //Populate fields with extracted properties
         nameTextView.setText(petName);
-        if (petBreed.equals("")) {
+        if (TextUtils.isEmpty(petBreed)) {
             breedTextView.setText(R.string.unknown_breed);
         } else {
             breedTextView.setText(petBreed);
