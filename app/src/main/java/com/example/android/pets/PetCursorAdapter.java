@@ -71,13 +71,14 @@ public class PetCursorAdapter extends CursorAdapter {
         String petName = cursor.getString(nameColumnIndex);
         String petBreed = cursor.getString(breedColumnIndex);
 
+        //Check if the petBreed is empty
+        if (TextUtils.isEmpty(petBreed)) {
+            petBreed = context.getString(R.string.unknown_breed);
+        }
+
         //Populate fields with extracted properties
         nameTextView.setText(petName);
-        if (TextUtils.isEmpty(petBreed)) {
-            breedTextView.setText(R.string.unknown_breed);
-        } else {
-            breedTextView.setText(petBreed);
-        }
+        breedTextView.setText(petBreed);
 
     }
 }
