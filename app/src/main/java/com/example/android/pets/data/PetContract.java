@@ -47,20 +47,12 @@ public final class PetContract {
         public static final int GENDER_FEMALE = 2;
         public static final int GENDER_UNKNOWN = 0;
 
-        public static boolean isValidWeight(String weightString){
-            return !weightString.equals("");
-        }
-
         /**
          * Returns whether or not the given gender is GENDER_* constant.
          */
         static boolean isValidGender(int gender){
-/*            if(gender == GENDER_UNKNOWN || gender == GENDER_MALE || gender == GENDER_FEMALE){
-                return true;
-            }
-            return false;*/
+
             return gender == GENDER_UNKNOWN || gender == GENDER_MALE || gender == GENDER_FEMALE;
         }
     }
-
 }
