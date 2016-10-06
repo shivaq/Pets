@@ -106,8 +106,6 @@ public class CatalogActivity extends AppCompatActivity implements LoaderManager.
 
                 // Set the URI on the data field of the intent
                 toEditIntent.setData(uriToEdit);
-                //PutExtra on Intent
-                toEditIntent.putExtra("mode", 2);
                 startActivity(toEditIntent);
             }
         });

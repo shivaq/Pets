@@ -21,7 +21,6 @@ public class PetDbHelper extends SQLiteOpenHelper {
      * @param context of the app
      */
     public PetDbHelper(Context context) {
-        //スーパークラスを継承しているから、Context が必要になる？
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
     }
 
@@ -42,8 +41,6 @@ public class PetDbHelper extends SQLiteOpenHelper {
 
         //execSQL は static ではないので、インスタンスメソッドなので、インスタンス経由で参照
         db.execSQL(SQL_CREATE_ENTRIES);
-
-        Log.v("PetDbHelper", "done db.execSQL");
     }
 
     @Override

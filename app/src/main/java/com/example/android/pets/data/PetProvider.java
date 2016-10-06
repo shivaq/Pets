@@ -35,14 +35,6 @@ public class PetProvider extends ContentProvider {
 
     /**
      * UriMatcher object to match a content URI to a corresponding code.
-     * The input passed into the constructor
-     * represents the code
-     * to return for the root URI.
-     * It's common to use NO_MATCH as the input for this case.
-     *
-     * コンストラクタ に渡される引数は、URI のルートに戻る事を意味する？？
-     * とにかく、コンストラクタには NO_MATCH を渡すのが通常らしい。
-     * sUriMatcher の s は static の s
      */
     private static final UriMatcher sUriMatcher = new UriMatcher(UriMatcher.NO_MATCH);
 
