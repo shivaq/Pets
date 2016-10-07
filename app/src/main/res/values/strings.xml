@@ -58,4 +58,42 @@
 
     <!-- Label for dropdown menu option if the pet is female [CHAR LIMIT=20] -->
     <string name="gender_female">Female</string>
+
+    <!--Toast the result of pet data insert-->
+    <string name="pet_register_success">Pet register succeeded!!</string>
+    <string name="error_registering">Error with saving pet</string>
+    <string name="insert_dummy">insert dummy data. New row ID is....</string>
+
+    <!-- Title text for the empty view, which describes the empty dog house image [CHAR LIMIT=50] -->
+    <string name="empty_view_title_text">It\'s a bit lonely here...</string>
+
+    <!-- Subtitle text for the empty view that prompts the user to add a pet [CHAR LIMIT=50] -->
+    <string name="empty_view_subtitle_text">Get started by adding a pet</string>
+
+    <string name="title_add_a_pet">Add a Pet</string>
+    <string name="title_edit_pet">Edit Pet</string>
+    <string name="update_failed">Update failed</string>
+    <string name="update_succeed">Update succeed!!</string>
+    <string name="unsaved_changes_dialog_msg">Discard your changes and quit editing?</string>
+    <string name="discard">Discard</string>
+    <string name="keep_editing">Keep Editing</string>
+
+    <!-- Toast message in editor when current pet was successfully deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_pet_successful">Pet deleted</string>
+
+    <!-- Toast message in editor when current pet has failed to be deleted [CHAR LIMIT=NONE] -->
+    <string name="editor_delete_pet_failed">Error with deleting pet</string>
+
+    <!-- Dialog message to ask the user to confirm deleting the current pet [CHAR LIMIT=NONE] -->
+    <string name="delete_dialog_msg">Delete this pet?</string>
+
+    <!-- Dialog button text for the option to confirm deleting the current pet [CHAR LIMIT=20] -->
+    <string name="delete">Delete</string>
+
+    <!-- Dialog button text for the option to cancel deletion of the current pet [CHAR LIMIT=20] -->
+    <string name="cancel">Cancel</string>
+    <string name="error_delete">Error with deleting pet..</string>
+    <string name="delete_success">Pet deleted.</string>
+    <string name="delete_em_all">Delete them all? Are you sure?</string>
+    <string name="unknown_breed">Unknown breed</string>
 </resources>
